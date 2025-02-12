@@ -8,6 +8,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+
+	"merchshop/internal/server/middlewares"
 )
 
 // Config holds configuration values for the API server, such as host and port.
@@ -16,21 +19,27 @@ type Config struct {
 	Port string `envconfig:"PORT" default:"8080"`
 }
 
+type tokenManager interface {
+	ParseClaims(string) (jwt.MapClaims, error)
+}
+
 // APIServer represents the API server, including configuration, router, and services.
 type APIServer struct {
 	router *gin.Engine     // HTTP router for handling requests.
 	cfg    *Config         // Configuration for server settings.
 	ctx    context.Context // Application context.
+	tknMng tokenManager
 }
 
 // New creates a new instance of APIServer with the provided context, configuration, and services.
-func New(ctx context.Context, cfg *Config) *APIServer {
+func New(ctx context.Context, cfg *Config, tknMng tokenManager) *APIServer {
 	router := gin.Default()
 
 	return &APIServer{
 		router: router,
 		cfg:    cfg,
 		ctx:    ctx,
+		tknMng: tknMng,
 	}
 }
 
