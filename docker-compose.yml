@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: mss-psql
+    restart: on-failure
+    networks:
+      - mss-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+#      - ./migrations/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${DB_USER} -d ${DB_NAME}'" ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    env_file:
+      - .env
+
+networks:
+  mss-network:
+    driver: bridge
