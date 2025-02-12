@@ -2,8 +2,13 @@
 // Includes route handling, middleware setup, and server configuration.
 package server
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
 
+	"merchshop/internal/server/middlewares"
+)
+
+// configureRouter sets up the HTTP route handlers.
 func (as *APIServer) configureRouter() {
 	api := as.router.Group("/api")
 	{

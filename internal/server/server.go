@@ -9,8 +9,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-
-	"merchshop/internal/server/middlewares"
 )
 
 // Config holds configuration values for the API server, such as host and port.
