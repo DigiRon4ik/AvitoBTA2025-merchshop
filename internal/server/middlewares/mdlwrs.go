@@ -5,7 +5,7 @@ import "github.com/golang-jwt/jwt/v5"
 const authHeader = "Authorization"
 
 type tokenManager interface {
-	ParseClaims(string) (jwt.MapClaims, error)
+	ParseClaims(string) (*jwt.MapClaims, error)
 }
 
 type Middlewares struct {

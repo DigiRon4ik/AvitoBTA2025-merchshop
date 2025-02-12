@@ -18,7 +18,7 @@ type Config struct {
 }
 
 type tokenManager interface {
-	ParseClaims(string) (jwt.MapClaims, error)
+	ParseClaims(string) (*jwt.MapClaims, error)
 }
 
 // APIServer represents the API server, including configuration, router, and services.

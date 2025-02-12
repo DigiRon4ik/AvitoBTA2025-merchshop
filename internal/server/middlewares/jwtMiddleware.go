@@ -31,8 +31,8 @@ func (m *Middlewares) JWTMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("user_id", claims["user_id"])
-		c.Set("username", claims["username"])
+		c.Set("user_id", (*claims)["sub"])
+		c.Set("username", (*claims)["username"])
 		c.Next()
 	}
 }
