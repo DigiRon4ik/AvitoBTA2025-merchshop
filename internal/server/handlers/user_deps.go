@@ -7,8 +7,8 @@ import (
 )
 
 type authService interface {
-	GetOrRegUser(ctx context.Context, username string) (*models.User, bool, error)
-	ComparePassword(ctx context.Context, lPasswd, uPasswd string) bool
+	GetOrRegUser(ctx context.Context, username, password string) (*models.User, bool, error)
+	ComparePassword(ctx context.Context, hashedPasswd, passwd string) bool
 }
 
 type tokenManager interface {

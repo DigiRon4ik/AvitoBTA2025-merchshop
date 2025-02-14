@@ -50,12 +50,12 @@ func (uh *UserHandlers) AuthHandler(c *gin.Context) {
 		return
 	}
 
-	user, ok, err := uh.authSrv.GetOrRegUser(uh.ctx, login.Username)
+	user, ok, err := uh.authSrv.GetOrRegUser(uh.ctx, login.Username, login.Password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrInDB.Error()})
 		return
 	} else if ok {
-		if uh.authSrv.ComparePassword(uh.ctx, login.Password, user.Password) {
+		if uh.authSrv.ComparePassword(uh.ctx, user.Password, login.Password) {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid password"})
 			return
 		}
