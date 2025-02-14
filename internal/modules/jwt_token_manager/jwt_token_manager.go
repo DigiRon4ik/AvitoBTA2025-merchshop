@@ -7,25 +7,39 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+type Config struct {
+	TTL    string `envconfig:"TTL" default:"abracadabra"`
+	secret string `envconfig:"SECRET_KEY" default:"24h"`
+}
+
 type CustomClaims struct {
 	Username string `json:"username"`
 	jwt.RegisteredClaims
 }
 
 type TokenManager struct {
+	TTL    time.Duration
 	secret []byte
 }
 
-func New(secret string) *TokenManager {
-	return &TokenManager{secret: []byte(secret)}
+func New(cfg Config) (*TokenManager, error) {
+	ttl, err := time.ParseDuration(cfg.TTL)
+	if err != nil {
+		return nil, err
+	}
+
+	return &TokenManager{
+		TTL:    ttl,
+		secret: []byte(cfg.secret),
+	}, nil
 }
 
-func (m *TokenManager) NewToken(userID, username string, ttl time.Duration) (string, error) {
+func (m *TokenManager) NewToken(userID, username string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, CustomClaims{
 		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   userID,
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(ttl)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(m.TTL)),
 		},
 	})
 
