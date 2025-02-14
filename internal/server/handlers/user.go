@@ -5,14 +5,11 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 
 	"merchshop/internal/models"
 )
-
-const ttlJWT = time.Hour * 24 * 7
 
 var ErrInDB = errors.New("something happened to the database")
 
@@ -22,7 +19,7 @@ type authService interface {
 }
 
 type tokenManager interface {
-	NewToken(userID, username string, ttl time.Duration) (string, error)
+	NewToken(userID, username string) (string, error)
 }
 
 type userInfoService interface {
@@ -93,7 +90,7 @@ func (uh *UserHandlers) AuthHandler(c *gin.Context) {
 		}
 	}
 
-	tokenString, err := uh.tknMng.NewToken(strconv.Itoa(user.ID), user.Username, ttlJWT)
+	tokenString, err := uh.tknMng.NewToken(strconv.Itoa(user.ID), user.Username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "token generation failure"})
 		return
