@@ -3,8 +3,6 @@
 package server
 
 import (
-	"github.com/gin-gonic/gin"
-
 	"merchshop/internal/server/middlewares"
 )
 
@@ -12,13 +10,14 @@ import (
 func (as *APIServer) configureRouter() {
 	api := as.router.Group("/api")
 	{
-		api.POST("/auth", func(c *gin.Context) {})
-		mdlwrs := middlewares.NewMiddlewares(as.tknMng)
-		authorized := api.Group("/", mdlwrs.JWTMiddleware())
+		api.POST("/auth", as.usrHandlers.AuthHandler)
+
+		meddlers := middlewares.NewMiddlewares(as.tknMng)
+		authorized := api.Group("/", meddlers.JWTMiddleware())
 		{
-			authorized.GET("/info", func(c *gin.Context) {})
-			authorized.GET("/sendCoin", func(c *gin.Context) {})
-			authorized.GET("/buy/:item", func(c *gin.Context) {})
+			authorized.GET("/info", as.usrHandlers.InfoHandler)
+			authorized.POST("/sendCoin", as.usrHandlers.SendCoinsHandler)
+			authorized.GET("/buy/:item", as.usrHandlers.BuyItemHandler)
 		}
 	}
 }

@@ -9,6 +9,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+
+	"merchshop/internal/server/handlers"
 )
 
 // Config holds configuration values for the API server, such as host and port.
@@ -23,21 +25,23 @@ type tokenManager interface {
 
 // APIServer represents the API server, including configuration, router, and services.
 type APIServer struct {
-	router *gin.Engine     // HTTP router for handling requests.
-	cfg    *Config         // Configuration for server settings.
-	ctx    context.Context // Application context.
-	tknMng tokenManager
+	router      *gin.Engine            // HTTP router for handling requests.
+	cfg         *Config                // Configuration for server settings.
+	ctx         context.Context        // Application context.
+	tknMng      tokenManager           // JWT Token Manager for token parsing
+	usrHandlers *handlers.UserHandlers // Main handlers for user
 }
 
 // New creates a new instance of APIServer with the provided context, configuration, and services.
-func New(ctx context.Context, cfg *Config, tknMng tokenManager) *APIServer {
+func New(ctx context.Context, cfg *Config, usrHandlers *handlers.UserHandlers, tknMng tokenManager) *APIServer {
 	router := gin.Default()
 
 	return &APIServer{
-		router: router,
-		cfg:    cfg,
-		ctx:    ctx,
-		tknMng: tknMng,
+		router:      router,
+		cfg:         cfg,
+		ctx:         ctx,
+		usrHandlers: usrHandlers,
+		tknMng:      tknMng,
 	}
 }
 
@@ -47,8 +51,8 @@ func (as *APIServer) Start() error {
 	server := &http.Server{
 		Addr:         as.cfg.Host + ":" + as.cfg.Port,
 		Handler:      as.router,        // Apply middleware to the router
-		ReadTimeout:  time.Second * 30, // Request read timeout
-		WriteTimeout: time.Second * 10, // Response Record Timeout
+		ReadTimeout:  time.Second * 50, // Request read timeout
+		WriteTimeout: time.Second * 50, // Response Record Timeout
 		IdleTimeout:  time.Second * 60, // Keep-alive connections timeout
 	}
 	return server.ListenAndServe() // Start the HTTP server
