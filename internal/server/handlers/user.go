@@ -131,7 +131,7 @@ func (uh *UserHandlers) SendCoinsHandler(c *gin.Context) {
 		return
 	}
 
-	senderID := c.GetInt("sender_id")
+	senderID := c.GetInt("user_id")
 	if senderCoins, err := uh.txSrv.GetSenderCoins(uh.ctx, senderID); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrInDB.Error()})
 		return
@@ -153,11 +153,11 @@ func (uh *UserHandlers) BuyItemHandler(c *gin.Context) {
 	itemSlug := c.Param("item")
 
 	item, err := uh.buyItmSrv.GetItem(uh.ctx, itemSlug)
-	if item == nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "item not found"})
-		return
-	} else if err != nil {
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrInDB.Error()})
+		return
+	} else if item == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "item not found"})
 		return
 	}
 
