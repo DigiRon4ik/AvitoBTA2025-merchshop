@@ -89,12 +89,11 @@ func (s *Storage) GetInventoryByUserID(ctx context.Context, userID int) (*[]mode
 // GetCoinHistoryByUserID retrieves the coin transaction history of a user by their ID.
 func (s *Storage) GetCoinHistoryByUserID(ctx context.Context, userID int) (*models.CoinHistory, error) {
 	g, gCtx := errgroup.WithContext(ctx)
-	defer gCtx.Done()
 
 	// RECEIVED
 	var recs *[]models.Receiving
 	g.Go(func() error {
-		data, err := fetchCoinHistory[models.Receiving](ctx, s.pool, getReceivedCoinHistoryByUserID, userID)
+		data, err := fetchCoinHistory[models.Receiving](gCtx, s.pool, getReceivedCoinHistoryByUserID, userID)
 		if err != nil {
 			return err
 		}
@@ -105,7 +104,7 @@ func (s *Storage) GetCoinHistoryByUserID(ctx context.Context, userID int) (*mode
 	// SENT
 	var sends *[]models.Sending
 	g.Go(func() error {
-		data, err := fetchCoinHistory[models.Sending](ctx, s.pool, getSendingCoinHistoryByUserID, userID)
+		data, err := fetchCoinHistory[models.Sending](gCtx, s.pool, getSendingCoinHistoryByUserID, userID)
 		if err != nil {
 			return err
 		}
