@@ -63,6 +63,6 @@ func (s *AuthService) GetOrRegUser(ctx context.Context, username, password strin
 }
 
 // ComparePassword checks if the provided password matches the hashed password.
-func (s *AuthService) ComparePassword(ctx context.Context, hashedPasswd, passwd string) bool {
+func (s *AuthService) ComparePassword(hashedPasswd, passwd string) bool {
 	return s.passwd.Compare(hashedPasswd, passwd)
 }

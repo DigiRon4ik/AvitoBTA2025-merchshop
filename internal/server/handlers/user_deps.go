@@ -8,7 +8,7 @@ import (
 
 type authService interface {
 	GetOrRegUser(ctx context.Context, username, password string) (*models.User, bool, error)
-	ComparePassword(ctx context.Context, hashedPasswd, passwd string) bool
+	ComparePassword(hashedPasswd, passwd string) bool
 }
 
 type tokenManager interface {
@@ -22,7 +22,7 @@ type userInfoService interface {
 }
 
 type transactionService interface {
-	GetIdRecipient(ctx context.Context, username string) (int, error)
+	GetIDRecipient(ctx context.Context, username string) (int, error)
 	GetSenderCoins(ctx context.Context, userID int) (int, error)
 	SendCoinsToUser(ctx context.Context, senderID, recipientID int, coins int) error
 }
