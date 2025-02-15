@@ -22,6 +22,8 @@ import (
 	"merchshop/internal/server/handlers"
 )
 
+var version string = "v1.0.0"
+
 func main() {
 	cfg := config.MustLoad()     // config loading
 	logg := logger.Init(cfg.Log) // logger initialization
@@ -53,7 +55,7 @@ func main() {
 
 	// server startup
 	go func() {
-		logg.Info("Application Started!")
+		logg.Info("Application Started! " + version)
 		if err = serv.Start(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			logg.Error("serv.Start", "err", err)
 			os.Exit(1)
