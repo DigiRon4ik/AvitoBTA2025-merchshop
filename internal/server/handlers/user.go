@@ -114,7 +114,7 @@ func (uh *UserHandlers) SendCoinsHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	// if send.ToUser == "" {
+	// if send.User == "" {
 	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "`toUser` must not be empty"})
 	// 	return
 	// } else if send.Amount <= 0 {
@@ -122,7 +122,7 @@ func (uh *UserHandlers) SendCoinsHandler(c *gin.Context) {
 	// 	return
 	// }
 
-	recipientID, err := uh.txSrv.GetIdRecipient(uh.ctx, send.ToUser)
+	recipientID, err := uh.txSrv.GetIdRecipient(uh.ctx, send.User)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrInDB.Error()})
 		return

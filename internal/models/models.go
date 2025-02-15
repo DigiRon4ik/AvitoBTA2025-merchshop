@@ -22,12 +22,12 @@ type Merch struct {
 }
 
 type Receiving struct {
-	FromUser string `json:"fromUser" db:"username"`
-	Amount   int    `json:"amount" db:"coins"`
+	User   string `json:"fromUser" db:"username"`
+	Amount int    `json:"amount" db:"coins"`
 }
 
 type Sending struct {
-	ToUser string `json:"toUser" db:"username" binding:"required,min=8,alphanum"`
+	User   string `json:"toUser" db:"username" binding:"required,min=8,alphanum"`
 	Amount int    `json:"amount" db:"coins" binding:"required,gte=1"`
 }
 
