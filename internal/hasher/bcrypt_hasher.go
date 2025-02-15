@@ -26,9 +26,5 @@ func (h *BcryptHasher) Hash(passwd string) (string, error) {
 // Compare checks if the provided password matches the hashed password.
 func (h *BcryptHasher) Compare(hashedPasswd, passwd string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPasswd), []byte(passwd))
-	if err != nil {
-		// If passwords do not match, return false.
-		return false
-	}
-	return true
+	return err == nil
 }

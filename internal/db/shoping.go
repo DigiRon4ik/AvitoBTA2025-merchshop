@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	getIdByUsername                = `SELECT id FROM users WHERE username=$1`
+	getIDByUsername                = `SELECT id FROM users WHERE username=$1`
 	getUserByUsername              = `SELECT * FROM users WHERE username=$1`
 	getCoinsByUserID               = `SELECT coins FROM users WHERE id=$1`
 	getInventoryByUserID           = `SELECT item_slug, quantity FROM inventory WHERE user_id = $1`
@@ -30,10 +30,10 @@ const (
 		DO UPDATE SET quantity = inventory.quantity + excluded.quantity, updated_at = NOW();`
 )
 
-// GetIdByUsername retrieves the user ID associated with the given username.
-func (s *Storage) GetIdByUsername(ctx context.Context, username string) (int, error) {
+// GetIDByUsername retrieves the user ID associated with the given username.
+func (s *Storage) GetIDByUsername(ctx context.Context, username string) (int, error) {
 	id := 0
-	err := s.pool.QueryRow(ctx, getIdByUsername, username).Scan(&id)
+	err := s.pool.QueryRow(ctx, getIDByUsername, username).Scan(&id)
 	return id, err
 }
 

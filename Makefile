@@ -6,7 +6,7 @@ endif
 
 # @docker-compose run --rm migrate -path /migrations -database "$(DSN)" down
 
-.PHONY: m-up m-down m-status d-up d-down d-down-v d-up-app d-up-b
+.PHONY: m-up m-down m-status d-up d-down d-down-v d-up-app d-up-b lint
 
 DSN=postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable
 
@@ -33,3 +33,6 @@ d-down-v:
 
 d-up-app:
 	@docker-compose up -d postgres app
+
+lint:
+	@golangci-lint run

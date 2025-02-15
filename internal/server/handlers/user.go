@@ -1,3 +1,8 @@
+// Package handlers provides HTTP handlers for user-related operations, including authentication,
+// retrieving user information, transferring coins, and purchasing items.
+// Each handler interacts with the appropriate service layer to perform its tasks and returns HTTP responses
+// in JSON format. The package uses the gin framework for routing and request handling,
+// ensuring a clean and modular structure for handling user requests.
 package handlers
 
 import (
@@ -11,17 +16,20 @@ import (
 	"merchshop/internal/models"
 )
 
+// ErrInDB is a common error message for database-related issues.
 var ErrInDB = errors.New("something happened to the database")
 
+// UserHandlers provides HTTP handlers for user-related operations.
 type UserHandlers struct {
-	ctx       context.Context
-	authSrv   authService
-	tknMng    tokenManager
-	usrInfSrv userInfoService
-	txSrv     transactionService
-	buyItmSrv buyItemService
+	ctx       context.Context    // Context for managing request-scoped values and cancellation.
+	authSrv   authService        // Service for authentication-related operations.
+	tknMng    tokenManager       // Manager for JWT token operations.
+	usrInfSrv userInfoService    // Service for retrieving user information.
+	txSrv     transactionService // Service for handling coin transactions.
+	buyItmSrv buyItemService     // Service for handling item purchases.
 }
 
+// NewUserHandlers creates a new instance of UserHandlers with the provided dependencies.
 func NewUserHandlers(ctx context.Context,
 	authSrv authService, tknMng tokenManager, usrInfSrv userInfoService,
 	txSrv transactionService, buyItmSrv buyItemService) *UserHandlers {
@@ -35,6 +43,7 @@ func NewUserHandlers(ctx context.Context,
 	}
 }
 
+// AuthHandler handles user authentication and token generation.
 func (uh *UserHandlers) AuthHandler(c *gin.Context) {
 	// switch c.GetHeader("Accept") {
 	// case "application/json":
@@ -55,7 +64,7 @@ func (uh *UserHandlers) AuthHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrInDB.Error()})
 		return
 	} else if ok {
-		if !uh.authSrv.ComparePassword(uh.ctx, user.Password, login.Password) {
+		if !uh.authSrv.ComparePassword(user.Password, login.Password) {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid password"})
 			return
 		}
@@ -70,6 +79,7 @@ func (uh *UserHandlers) AuthHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"token": tokenString})
 }
 
+// InfoHandler retrieves and returns user information, including coins, inventory, and coin history.
 func (uh *UserHandlers) InfoHandler(c *gin.Context) {
 	// switch c.GetHeader("Accept") {
 	// case "application/json":
@@ -78,8 +88,8 @@ func (uh *UserHandlers) InfoHandler(c *gin.Context) {
 	// 	c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"error": "the ‘accept’ header is not application/json"})
 	// 	return
 	// }
-	userIdStr, _ := c.Get("user_id")
-	userID, err := strconv.Atoi(userIdStr.(string))
+	userIDStr, _ := c.Get("user_id")
+	userID, err := strconv.Atoi(userIDStr.(string))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "context parsing failure"})
 		return
@@ -116,6 +126,7 @@ func (uh *UserHandlers) InfoHandler(c *gin.Context) {
 	})
 }
 
+// SendCoinsHandler handles the transfer of coins from one user to another.
 func (uh *UserHandlers) SendCoinsHandler(c *gin.Context) {
 	var send models.Sending
 	if err := c.ShouldBindJSON(&send); err != nil {
@@ -130,7 +141,7 @@ func (uh *UserHandlers) SendCoinsHandler(c *gin.Context) {
 	// 	return
 	// }
 
-	recipientID, err := uh.txSrv.GetIdRecipient(uh.ctx, send.User)
+	recipientID, err := uh.txSrv.GetIDRecipient(uh.ctx, send.User)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrInDB.Error()})
 		return
@@ -139,8 +150,8 @@ func (uh *UserHandlers) SendCoinsHandler(c *gin.Context) {
 		return
 	}
 
-	senderIdStr, _ := c.Get("user_id")
-	senderID, err := strconv.Atoi(senderIdStr.(string))
+	senderIDStr, _ := c.Get("user_id")
+	senderID, err := strconv.Atoi(senderIDStr.(string))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "context parsing failure"})
 		return
@@ -161,10 +172,11 @@ func (uh *UserHandlers) SendCoinsHandler(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
+// BuyItemHandler handles the purchase of an item by a user.
 func (uh *UserHandlers) BuyItemHandler(c *gin.Context) {
 	itemSlug := c.Param("item")
-	userIdStr, _ := c.Get("user_id")
-	userID, err := strconv.Atoi(userIdStr.(string))
+	userIDStr, _ := c.Get("user_id")
+	userID, err := strconv.Atoi(userIDStr.(string))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "context parsing failure"})
 		return

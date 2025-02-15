@@ -59,6 +59,7 @@ func (as *APIServer) Start() error {
 	return as.server.ListenAndServe() // Start the HTTP server
 }
 
+// Shutdown gently terminates the server by executing the remaining requests.
 func (as *APIServer) Shutdown(ctx context.Context) error {
 	return as.server.Shutdown(ctx)
 }
