@@ -23,7 +23,7 @@ import (
 	"merchshop/internal/server/handlers"
 )
 
-var version = "v1.0.0"
+var version = "v1.1.0"
 
 func main() {
 	cfg := config.MustLoad()     // config loading
