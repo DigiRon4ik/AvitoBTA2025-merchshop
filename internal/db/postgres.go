@@ -32,7 +32,7 @@ type Storage struct {
 // or
 //
 //	host=<host> port=<port> user=<user> password=<password> dbname=<name> sslmode=disable
-func getPsqlDsn(cfg Config) string {
+func getPsqlDsn(cfg *Config) string {
 	// dsn := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s?sslmode=disable",
 	// 	cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Name)
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
@@ -41,7 +41,7 @@ func getPsqlDsn(cfg Config) string {
 }
 
 // NewPostgresPool creates a configuration database pool.
-func NewPostgresPool(ctx context.Context, cfg Config) (*Storage, error) {
+func NewPostgresPool(ctx context.Context, cfg *Config) (*Storage, error) {
 	poolCfg, err := pgxpool.ParseConfig(getPsqlDsn(cfg))
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse DSN: %w", err)

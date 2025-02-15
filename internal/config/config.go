@@ -7,14 +7,16 @@ import (
 
 	"merchshop/internal/db"
 	"merchshop/internal/logger"
+	"merchshop/internal/modules/jwt_token_manager"
 	"merchshop/internal/server"
 )
 
 // Config holds the entire application configuration.
 type Config struct {
-	Log       logger.Config `envconfig:"LOG" required:"true"`
-	DB        db.Config     `envconfig:"DB" required:"true"`
-	APIServer server.Config `envconfig:"HTTP" required:"true"`
+	Log       *logger.Config            `envconfig:"LOG" required:"true"`
+	DB        *db.Config                `envconfig:"DB" required:"true"`
+	APIServer *server.Config            `envconfig:"HTTP" required:"true"`
+	JWT       *jwt_token_manager.Config `envconfig:"JWT" required:"true"`
 }
 
 // MustLoad is a function that loads environment variables from a `.env` file and

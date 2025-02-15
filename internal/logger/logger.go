@@ -13,7 +13,7 @@ type Config struct {
 }
 
 // Init - Initialize the logger.
-func Init(cfg Config) *slog.Logger {
+func Init(cfg *Config) *slog.Logger {
 	logLevel := &slog.LevelVar{} // INFO
 	logLevel.Set(cfg.Level)
 
