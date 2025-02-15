@@ -30,6 +30,7 @@ type APIServer struct {
 	ctx         context.Context        // Application context.
 	tknMng      tokenManager           // JWT Token Manager for token parsing
 	usrHandlers *handlers.UserHandlers // Main handlers for user
+	server      *http.Server
 }
 
 // New creates a new instance of APIServer with the provided context, configuration, and services.
@@ -48,12 +49,16 @@ func New(ctx context.Context, cfg *Config, usrHandlers *handlers.UserHandlers, t
 // Start begins the HTTP server, listening on the configured host and port.
 func (as *APIServer) Start() error {
 	as.configureRouter() // Configure the HTTP routes
-	server := &http.Server{
+	as.server = &http.Server{
 		Addr:         as.cfg.Host + ":" + as.cfg.Port,
 		Handler:      as.router,        // Apply middleware to the router
 		ReadTimeout:  time.Second * 50, // Request read timeout
 		WriteTimeout: time.Second * 50, // Response Record Timeout
 		IdleTimeout:  time.Second * 60, // Keep-alive connections timeout
 	}
-	return server.ListenAndServe() // Start the HTTP server
+	return as.server.ListenAndServe() // Start the HTTP server
+}
+
+func (as *APIServer) Shutdown(ctx context.Context) error {
+	return as.server.Shutdown(ctx)
 }
