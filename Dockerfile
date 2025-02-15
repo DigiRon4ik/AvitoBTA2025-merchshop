@@ -8,7 +8,7 @@ RUN go mod download
 
 # Build
 COPY . .
-RUN go build -o ./bin/app ./cmd/app/main.go
+RUN go build -o ./bin/app ./cmd/merchshop/main.go
 
 
 FROM alpine AS runner
