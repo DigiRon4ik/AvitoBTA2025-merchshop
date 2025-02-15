@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS transactions
 );
 
 -- Дополнительные индексы (если необходимо)
+CREATE INDEX IF NOT EXISTS idx_users_username ON users (username);
 CREATE INDEX IF NOT EXISTS idx_transactions_sender ON transactions (sender_id);
 CREATE INDEX IF NOT EXISTS idx_transactions_receiver ON transactions (receiver_id);
 CREATE INDEX IF NOT EXISTS idx_inventory_user ON inventory (user_id);
