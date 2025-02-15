@@ -22,7 +22,7 @@ type TokenManager struct {
 	secret []byte
 }
 
-func New(cfg Config) (*TokenManager, error) {
+func New(cfg *Config) (*TokenManager, error) {
 	ttl, err := time.ParseDuration(cfg.TTL)
 	if err != nil {
 		return nil, err
