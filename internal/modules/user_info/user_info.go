@@ -23,8 +23,8 @@ type UserInfoService struct {
 }
 
 // New creates a new instance of UserInfoService with the given database storage.
-func New(store database) *UserInfoService {
-	return &UserInfoService{store}
+func New(storage database) *UserInfoService {
+	return &UserInfoService{storage}
 }
 
 // GetCoins retrieves the number of coins for a specific user.

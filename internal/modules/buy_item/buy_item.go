@@ -24,8 +24,8 @@ type BuyItemService struct {
 }
 
 // New creates a new instance of BuyItemService with the given storage.
-func New(store database) *BuyItemService {
-	return &BuyItemService{store}
+func New(storage database) *BuyItemService {
+	return &BuyItemService{storage}
 }
 
 // GetItem retrieves an item by its slug, handling database errors.
