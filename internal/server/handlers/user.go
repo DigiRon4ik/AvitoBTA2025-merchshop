@@ -55,7 +55,7 @@ func (uh *UserHandlers) AuthHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrInDB.Error()})
 		return
 	} else if ok {
-		if uh.authSrv.ComparePassword(uh.ctx, user.Password, login.Password) {
+		if !uh.authSrv.ComparePassword(uh.ctx, user.Password, login.Password) {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid password"})
 			return
 		}
@@ -78,7 +78,12 @@ func (uh *UserHandlers) InfoHandler(c *gin.Context) {
 	// 	c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"error": "the ‘accept’ header is not application/json"})
 	// 	return
 	// }
-	userID := c.GetInt("user_id")
+	userIdStr, _ := c.Get("user_id")
+	userID, err := strconv.Atoi(userIdStr.(string))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "context parsing failure"})
+		return
+	}
 
 	coins, err := uh.usrInfSrv.GetCoins(uh.ctx, userID)
 	if err != nil {
@@ -98,13 +103,16 @@ func (uh *UserHandlers) InfoHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"coins":     coins,
-		"inventory": inventory,
-		"coinHistory": gin.H{
-			"received": coinHistory.Receiving,
-			"sent":     coinHistory.Sending,
-		},
+	type Response struct {
+		Coins       int                 `json:"coins"`
+		Inventory   *[]models.Merch     `json:"inventory"`
+		CoinHistory *models.CoinHistory `json:"coinHistory"`
+	}
+
+	c.JSON(http.StatusOK, Response{
+		Coins:       coins,
+		Inventory:   inventory,
+		CoinHistory: coinHistory,
 	})
 }
 
@@ -131,7 +139,12 @@ func (uh *UserHandlers) SendCoinsHandler(c *gin.Context) {
 		return
 	}
 
-	senderID := c.GetInt("user_id")
+	senderIdStr, _ := c.Get("user_id")
+	senderID, err := strconv.Atoi(senderIdStr.(string))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "context parsing failure"})
+		return
+	}
 	if senderCoins, err := uh.txSrv.GetSenderCoins(uh.ctx, senderID); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrInDB.Error()})
 		return
@@ -149,8 +162,13 @@ func (uh *UserHandlers) SendCoinsHandler(c *gin.Context) {
 }
 
 func (uh *UserHandlers) BuyItemHandler(c *gin.Context) {
-	userID := c.GetInt("user_id")
 	itemSlug := c.Param("item")
+	userIdStr, _ := c.Get("user_id")
+	userID, err := strconv.Atoi(userIdStr.(string))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "context parsing failure"})
+		return
+	}
 
 	item, err := uh.buyItmSrv.GetItem(uh.ctx, itemSlug)
 	if err != nil {
