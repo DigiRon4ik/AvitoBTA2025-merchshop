@@ -29,4 +29,4 @@ d-down-v:
 	@docker-compose down -v
 
 d-up-app:
-	@docker-compose up -d postgres
+	@docker-compose up -d postgres app

@@ -34,6 +34,22 @@ services:
         condition: service_healthy
     command: "-path /migrations -database postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable up"
 
+  app:
+    build: ./
+    container_name: mss-app
+    networks:
+      - mss-network
+    ports:
+      - "${HTTP_PORT}:${HTTP_PORT}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: mss-psql
+      HTTP_HOST: "0.0.0.0"
+    env_file:
+      - .env
+
 volumes:
   postgres_data:
 
