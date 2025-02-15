@@ -1,3 +1,4 @@
+// Package transaction provides functionality for handling coin transactions between users.
 package transaction
 
 import (
@@ -8,7 +9,7 @@ import (
 
 // database interface defines methods for handling coin transactions and user data.
 type database interface {
-	GetIdByUsername(ctx context.Context, username string) (int, error)
+	GetIDByUsername(ctx context.Context, username string) (int, error)
 	GetCoinsByUserID(ctx context.Context, userID int) (int, error)
 	TransferCoins(ctx context.Context, fromUserID, toUserID, coins int) error
 }
@@ -23,9 +24,9 @@ func New(storage database) *TransactService {
 	return &TransactService{storage}
 }
 
-// GetIdRecipient retrieves the ID of a recipient by their username, handling database errors.
-func (s *TransactService) GetIdRecipient(ctx context.Context, username string) (int, error) {
-	id, err := s.storage.GetIdByUsername(ctx, username)
+// GetIDRecipient retrieves the ID of a recipient by their username, handling database errors.
+func (s *TransactService) GetIDRecipient(ctx context.Context, username string) (int, error) {
+	id, err := s.storage.GetIDByUsername(ctx, username)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return 0, err
 	}
