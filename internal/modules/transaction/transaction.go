@@ -27,14 +27,18 @@ func New(storage database) *TransactService {
 func (s *TransactService) GetIdRecipient(ctx context.Context, username string) (int, error) {
 	id, err := s.storage.GetIdByUsername(ctx, username)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		return id, err
+		return 0, err
 	}
 	return id, nil
 }
 
 // GetSenderCoins retrieves the number of coins a sender has by their ID.
 func (s *TransactService) GetSenderCoins(ctx context.Context, userID int) (int, error) {
-	return s.storage.GetCoinsByUserID(ctx, userID)
+	coins, err := s.storage.GetCoinsByUserID(ctx, userID)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return 0, err
+	}
+	return coins, nil
 }
 
 // SendCoinsToUser transfers coins from a sender to a recipient.

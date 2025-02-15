@@ -4,6 +4,8 @@ package user_info
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"merchshop/internal/models"
 )
@@ -17,22 +19,26 @@ type database interface {
 
 // UserInfoService provides functionality for retrieving user-related information.
 type UserInfoService struct {
-	store database
+	storage database
 }
 
-// New creates a new instance of UserInfoService with the given database store.
+// New creates a new instance of UserInfoService with the given database storage.
 func New(store database) *UserInfoService {
 	return &UserInfoService{store}
 }
 
 // GetCoins retrieves the number of coins for a specific user.
 func (s *UserInfoService) GetCoins(ctx context.Context, userID int) (int, error) {
-	return s.store.GetCoinsByUserID(ctx, userID)
+	coins, err := s.storage.GetCoinsByUserID(ctx, userID)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return 0, err
+	}
+	return coins, nil
 }
 
 // GetInventory retrieves the inventory of a specific user, returning an empty list if none exists.
 func (s *UserInfoService) GetInventory(ctx context.Context, userID int) (*[]models.Merch, error) {
-	inventory, err := s.store.GetInventoryByUserID(ctx, userID)
+	inventory, err := s.storage.GetInventoryByUserID(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +50,7 @@ func (s *UserInfoService) GetInventory(ctx context.Context, userID int) (*[]mode
 
 // GetCoinHistory retrieves the coin transaction history of a specific user, ensuring non-nil fields.
 func (s *UserInfoService) GetCoinHistory(ctx context.Context, userID int) (*models.CoinHistory, error) {
-	coinHistory, err := s.store.GetCoinHistoryByUserID(ctx, userID)
+	coinHistory, err := s.storage.GetCoinHistoryByUserID(ctx, userID)
 	if err != nil {
 		return nil, err
 	}

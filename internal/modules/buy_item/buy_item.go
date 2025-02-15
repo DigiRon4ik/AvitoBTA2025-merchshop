@@ -20,7 +20,7 @@ type database interface {
 
 // BuyItemService provides functionality for handling item purchases.
 type BuyItemService struct {
-	store database
+	storage database
 }
 
 // New creates a new instance of BuyItemService with the given storage.
@@ -30,7 +30,7 @@ func New(store database) *BuyItemService {
 
 // GetItem retrieves an item by its slug, handling database errors.
 func (s *BuyItemService) GetItem(ctx context.Context, slug string) (*models.Item, error) {
-	item, err := s.store.GetItemBySlug(ctx, slug)
+	item, err := s.storage.GetItemBySlug(ctx, slug)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return nil, err
 	}
@@ -39,10 +39,14 @@ func (s *BuyItemService) GetItem(ctx context.Context, slug string) (*models.Item
 
 // GetBuyerCoins retrieves the number of coins a buyer has by their ID.
 func (s *BuyItemService) GetBuyerCoins(ctx context.Context, userID int) (int, error) {
-	return s.store.GetCoinsByUserID(ctx, userID)
+	coins, err := s.storage.GetCoinsByUserID(ctx, userID)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return 0, err
+	}
+	return coins, nil
 }
 
 // BuyItem processes the purchase of an item by a user.
 func (s *BuyItemService) BuyItem(ctx context.Context, userID int, item *models.Item) error {
-	return s.store.MakePurchaseByUserID(ctx, userID, item)
+	return s.storage.MakePurchaseByUserID(ctx, userID, item)
 }
