@@ -32,8 +32,8 @@ type Sending struct {
 }
 
 type CoinHistory struct {
-	Receiving *[]Receiving
-	Sending   *[]Sending
+	Receiving *[]Receiving `json:"received"`
+	Sending   *[]Sending   `json:"sent"`
 }
 
 type Item struct {
