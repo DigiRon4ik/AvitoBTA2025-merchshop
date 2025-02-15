@@ -205,7 +205,7 @@ func (s *Storage) MakePurchaseByUserID(ctx context.Context, userID int, item *mo
 	}()
 
 	// Subtract money from the user
-	_, err = tx.Exec(ctx, subtractFromCoinsByUserID, userID)
+	_, err = tx.Exec(ctx, subtractFromCoinsByUserID, item.Price, userID)
 	if err != nil {
 		return err
 	}
