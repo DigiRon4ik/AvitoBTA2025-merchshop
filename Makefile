@@ -6,7 +6,7 @@ endif
 
 # @docker-compose run --rm migrate -path /migrations -database "$(DSN)" down
 
-.PHONY: m-up m-down m-status d-up d-down d-down-v d-up-app
+.PHONY: m-up m-down m-status d-up d-down d-down-v d-up-app d-up-b
 
 DSN=postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable
 
@@ -21,6 +21,9 @@ m-status:
 
 d-up:
 	@docker-compose up -d
+
+d-up-b:
+	@docker-compose up -d --build
 
 d-down:
 	@docker-compose down
