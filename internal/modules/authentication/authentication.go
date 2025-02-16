@@ -1,3 +1,5 @@
+//go:generate go run github.com/vektra/mockery/v2@v2.52.2 --all --output=./mocks
+
 // Package authentication provides functionality for user authentication,
 // including user retrieval,registration, and password management.
 package authentication
@@ -10,26 +12,26 @@ import (
 	"merchshop/internal/models"
 )
 
-// database interface defines methods for interacting with the user storage.
-type database interface {
+// DataBase interface defines methods for interacting with the user storage.
+type DataBase interface {
 	GetUserByUsername(ctx context.Context, username string) (*models.User, error)
 	SaveUser(ctx context.Context, user *models.User) error
 }
 
-// hasher interface defines methods for password hashing and comparison.
-type hasher interface {
+// Hasher interface defines methods for password hashing and comparison.
+type Hasher interface {
 	Hash(passwd string) (string, error)
 	Compare(hashedPasswd, passwd string) bool
 }
 
 // AuthService provides authentication-related functionality.
 type AuthService struct {
-	storage database
-	passwd  hasher
+	storage DataBase
+	passwd  Hasher
 }
 
-// New creates a new instance of AuthService with the given storage and hasher.
-func New(storage database, passwd hasher) *AuthService {
+// New creates a new instance of AuthService with the given storage and Hasher.
+func New(storage DataBase, passwd Hasher) *AuthService {
 	return &AuthService{storage, passwd}
 }
 
