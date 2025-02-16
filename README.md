@@ -155,7 +155,8 @@ In the process...
 ### — _Further development:_
 1. Integrate Swagger and Swagger UI
 2. Implement RefreshToken and a handle to refresh AccessToken
-3. Realize CI/CD pipelines for internet deployment
+3. Implement cache (in-memory | Redis) (ran out of time)
+4. Realize CI/CD pipelines for internet deployment
 
 ---
 
