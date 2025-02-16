@@ -144,15 +144,11 @@ The developed API is implemented according to the REST API design.
 ### — _Video:_
 In the process...
 
-[//]: # (<p align="center">)
-
-[//]: # (  <a href="https://youtu.be/27ToZvGJTVY">)
-
-[//]: # (    <img width=800 src="https://i.imgur.com/bqTOsir.png" >)
-
-[//]: # (  </a>)
-
-[//]: # (</p>)
+<p align="center">
+  <a href="https://youtu.be/kcXpjMybaJE">
+    <img width=800 src="https://i.imgur.com/Xmf1YPC.png" >
+  </a>
+</p>
 
 ---
 
