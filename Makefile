@@ -9,17 +9,17 @@ DSN=postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmod
 .PHONY: m-up
 # migrate up
 m-up:
-	@docker-compose run --rm migrate -path /migrations -database "$(DSN)" up
+	@docker-compose run --rm migrate -path ./migrations -database "$(DSN)" up
 
 .PHONY: m-down
 # migrate down
 m-down:
-	@docker-compose run --rm migrate -path /migrations -database "$(DSN)" down -all
+	@docker-compose run --rm migrate -path ./migrations -database "$(DSN)" down -all
 
 .PHONY: m-status
 # migrate version (status)
 m-status:
-	@docker-compose run --rm migrate -path /migrations -database "$(DSN)" version
+	@docker-compose run --rm migrate -path ./migrations -database "$(DSN)" version
 
 .PHONY: d-up
 # service improvement
