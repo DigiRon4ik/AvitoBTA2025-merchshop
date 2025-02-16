@@ -1,3 +1,5 @@
+//go:generate go run github.com/vektra/mockery/v2@v2.52.2 --all --output=./mocks
+
 // Package transaction provides functionality for handling coin transactions between users.
 package transaction
 
@@ -7,8 +9,8 @@ import (
 	"errors"
 )
 
-// database interface defines methods for handling coin transactions and user data.
-type database interface {
+// DataBase interface defines methods for handling coin transactions and user data.
+type DataBase interface {
 	GetIDByUsername(ctx context.Context, username string) (int, error)
 	GetCoinsByUserID(ctx context.Context, userID int) (int, error)
 	TransferCoins(ctx context.Context, fromUserID, toUserID, coins int) error
@@ -16,15 +18,15 @@ type database interface {
 
 // TransactService provides functionality for handling coin transactions.
 type TransactService struct {
-	storage database
+	storage DataBase
 }
 
 // New creates a new instance of TransactService with the given storage.
-func New(storage database) *TransactService {
+func New(storage DataBase) *TransactService {
 	return &TransactService{storage}
 }
 
-// GetIDRecipient retrieves the ID of a recipient by their username, handling database errors.
+// GetIDRecipient retrieves the ID of a recipient by their username, handling DataBase errors.
 func (s *TransactService) GetIDRecipient(ctx context.Context, username string) (int, error) {
 	id, err := s.storage.GetIDByUsername(ctx, username)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
