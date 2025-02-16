@@ -52,7 +52,8 @@ lint:
 	@golangci-lint run
 
 COVER_PKG_LIST ?= ./internal/db ./internal/hasher ./internal/modules/authentication ./internal/modules/jwt_token_manager \
-./internal/modules/buy_item ./internal/modules/transaction ./internal/modules/user_info
+./internal/modules/buy_item ./internal/modules/transaction ./internal/modules/user_info \
+./internal/server ./internal/server/handlers
 
 .PHONY: tests
 # running all tests except integration tests
