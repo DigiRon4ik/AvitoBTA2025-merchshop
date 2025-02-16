@@ -109,7 +109,7 @@ func TestTokenManager_ParseTokenError(t *testing.T) {
 		},
 		{
 			name:        "Invalid token (modified signature)",
-			token:       tokenString[:len(tokenString)-1] + "x",
+			token:       tokenString[:len(tokenString)-1] + "qwerty",
 			expectError: true,
 		},
 		{
