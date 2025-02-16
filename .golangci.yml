@@ -25,5 +25,8 @@ issues:
     # EXC0001 errcheck: Almost all programs ignore errors on these functions and in most cases it's ok
     - Error return value of .((os\.)?std(out|err)\..*|.*Close|.*Flush|os\.Remove(All)?|.*print(f|ln)?|os\.(Un)?Setenv). is not checked
     - should check returned error before deferring
+  exclude-files:
+    - _test\.go$
 run:
   timeout: 5m
+

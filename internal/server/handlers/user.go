@@ -22,17 +22,17 @@ var ErrInDB = errors.New("something happened to the database")
 // UserHandlers provides HTTP handlers for user-related operations.
 type UserHandlers struct {
 	ctx       context.Context    // Context for managing request-scoped values and cancellation.
-	authSrv   authService        // Service for authentication-related operations.
-	tknMng    tokenManager       // Manager for JWT token operations.
-	usrInfSrv userInfoService    // Service for retrieving user information.
-	txSrv     transactionService // Service for handling coin transactions.
-	buyItmSrv buyItemService     // Service for handling item purchases.
+	authSrv   AuthService        // Service for authentication-related operations.
+	tknMng    TokenManager       // Manager for JWT token operations.
+	usrInfSrv UserInfoService    // Service for retrieving user information.
+	txSrv     TransactionService // Service for handling coin transactions.
+	buyItmSrv BuyItemService     // Service for handling item purchases.
 }
 
 // NewUserHandlers creates a new instance of UserHandlers with the provided dependencies.
 func NewUserHandlers(ctx context.Context,
-	authSrv authService, tknMng tokenManager, usrInfSrv userInfoService,
-	txSrv transactionService, buyItmSrv buyItemService) *UserHandlers {
+	authSrv AuthService, tknMng TokenManager, usrInfSrv UserInfoService,
+	txSrv TransactionService, buyItmSrv BuyItemService) *UserHandlers {
 	return &UserHandlers{
 		ctx:       ctx,
 		authSrv:   authSrv,
@@ -164,7 +164,7 @@ func (uh *UserHandlers) SendCoinsHandler(c *gin.Context) {
 		return
 	}
 
-	if err := uh.txSrv.SendCoinsToUser(uh.ctx, senderID, recipientID, send.Amount); err != nil {
+	if err = uh.txSrv.SendCoinsToUser(uh.ctx, senderID, recipientID, send.Amount); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrInDB.Error()})
 		return
 	}
@@ -200,7 +200,7 @@ func (uh *UserHandlers) BuyItemHandler(c *gin.Context) {
 		return
 	}
 
-	if err := uh.buyItmSrv.BuyItem(uh.ctx, userID, item); err != nil {
+	if err = uh.buyItmSrv.BuyItem(uh.ctx, userID, item); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrInDB.Error()})
 		return
 	}

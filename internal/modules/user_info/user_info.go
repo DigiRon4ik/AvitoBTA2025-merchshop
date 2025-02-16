@@ -1,3 +1,5 @@
+//go:generate go run github.com/vektra/mockery/v2@v2.52.2 --all --output=./mocks
+
 // Package user_info provides functionality for retrieving user-related information
 // such as coin balance, inventory, and coin transaction history.
 package user_info
@@ -10,8 +12,8 @@ import (
 	"merchshop/internal/models"
 )
 
-// database interface defines methods for retrieving user-related data.
-type database interface {
+// DataBase interface defines methods for retrieving user-related data.
+type DataBase interface {
 	GetCoinsByUserID(ctx context.Context, userID int) (int, error)
 	GetInventoryByUserID(ctx context.Context, userID int) (*[]models.Merch, error)
 	GetCoinHistoryByUserID(ctx context.Context, userID int) (*models.CoinHistory, error)
@@ -19,11 +21,11 @@ type database interface {
 
 // UserInfoService provides functionality for retrieving user-related information.
 type UserInfoService struct {
-	storage database
+	storage DataBase
 }
 
-// New creates a new instance of UserInfoService with the given database storage.
-func New(storage database) *UserInfoService {
+// New creates a new instance of UserInfoService with the given DataBase storage.
+func New(storage DataBase) *UserInfoService {
 	return &UserInfoService{storage}
 }
 
